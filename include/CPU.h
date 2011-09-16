@@ -1,11 +1,11 @@
-#ifndef CHIP8_CPU_H
-#define CHIP8_CPU_H
+#ifndef YACE_CHIP8_CPU_H
+#define YACE_CHIP8_CPU_H
 
 #include <cstdio>
 #include <cstdlib>
 #include <stack>
 
-namespace Chip8
+namespace YACE
 {
   class Chip8;
   class CPU

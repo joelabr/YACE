@@ -1,6 +1,6 @@
 #include "../include/Chip8.h"
 
-namespace Chip8
+namespace YACE
 {
   Chip8::Chip8() : cpu(CPU(*this)), cpu_cycles(1000), delay_timer(0), sound_timer(0), key_is_pressed(false), last_key_pressed(KEY_0)
   {

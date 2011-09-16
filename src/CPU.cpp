@@ -1,7 +1,7 @@
 #include "../include/CPU.h"
 #include "../include/Chip8.h"
 
-namespace Chip8
+namespace YACE
 {
   CPU::CPU(Chip8& chip8) : chip8(chip8), opcode(0), stack(), I(0), program_counter(0x1FF)
   {
