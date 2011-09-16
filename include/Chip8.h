@@ -1,6 +1,12 @@
 #ifndef YACE_CHIP8_H
 #define YACE_CHIP8_H
 
+#ifdef _DEBUG_
+#define print_debug(args...) (printf(args))
+#else
+#define print_debug(args...) (void(0))
+#endif
+
 #include <cstdio>
 #include <fstream>
 
@@ -12,7 +18,6 @@ namespace YACE
   {
     public:
       Chip8();
-      ~Chip8();
 
       enum EMU_KEYS{KEY_0 = 1, KEY_1, KEY_2, KEY_3, KEY_4, KEY_5, KEY_6, KEY_7, KEY_8, KEY_9,
                     KEY_A, KEY_B, KEY_C, KEY_D, KEY_E, KEY_F};

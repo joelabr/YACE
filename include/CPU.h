@@ -12,7 +12,6 @@ namespace YACE
   {
     public:
       CPU(Chip8& chip8);
-      ~CPU();
 
       void execute(int cycles);
       void reset();

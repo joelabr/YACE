@@ -7,10 +7,6 @@ namespace YACE
     reset();
   }
 
-  Chip8::~Chip8()
-  {
-  }
-
   /*
    *  Private methods
    */

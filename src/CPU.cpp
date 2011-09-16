@@ -8,10 +8,6 @@ namespace YACE
     reset();
   }
 
-  CPU::~CPU()
-  {
-  }
-
   /*
    *  Private methods
    */
@@ -120,7 +116,7 @@ namespace YACE
    */
   void CPU::opcode0x00E0(unsigned short opcode)
   {
-    printf("Clears the screen.\n");
+    print_debug("Clears the screen.\n");
     chip8.reset_video();
     program_counter += 2;
   }
@@ -130,7 +126,7 @@ namespace YACE
    */
   void CPU::opcode0x00EE(unsigned short opcode)
   {
-    printf("Returns from subroutine.\n");
+    print_debug("Returns from subroutine.\n");
     if (!stack.empty())
     {
       program_counter = stack.top() + 2;
@@ -145,7 +141,7 @@ namespace YACE
    */
   void CPU::opcode0x1000(unsigned short opcode)
   {
-    printf("Jump to address %X.\n", opcode & 0x0FFF);
+    print_debug("Jump to address %X.\n", opcode & 0x0FFF);
     program_counter = (opcode & 0xFFF) - 1;
   }
 
@@ -154,7 +150,7 @@ namespace YACE
    */
   void CPU::opcode0x2000(unsigned short opcode)
   {
-    printf("Call subroutine at %X.\n", opcode & 0x0FFF);
+    print_debug("Call subroutine at %X.\n", opcode & 0x0FFF);
     if (stack.size() < 16)
     {
       stack.push(program_counter);
@@ -169,7 +165,7 @@ namespace YACE
    */
   void CPU::opcode0x3000(unsigned short opcode)
   {
-    printf("Skips next instruction if VX == NN.\n");
+    print_debug("Skips next instruction if VX == NN.\n");
     if (V[((opcode & 0x0F00) >> 8)] == (opcode & 0x00FF))
       program_counter += 4;
     else
@@ -181,7 +177,7 @@ namespace YACE
    */
   void CPU::opcode0x4000(unsigned short opcode)
   {
-    printf("Skips next instruction if VX != NN.\n");
+    print_debug("Skips next instruction if VX != NN.\n");
     if (V[((opcode & 0x0F00) >> 8)] != (opcode & 0x00FF))
       program_counter += 4;
     else
@@ -193,7 +189,7 @@ namespace YACE
    */
   void CPU::opcode0x5000(unsigned short opcode)
   {
-    printf("Skip next instruction if VX == VY.\n");
+    print_debug("Skip next instruction if VX == VY.\n");
     if (V[((opcode & 0x0F00) >> 8)] == V[((opcode & 0x00F0) >> 4)])
       program_counter += 4;
     else
@@ -205,7 +201,7 @@ namespace YACE
    */
   void CPU::opcode0x6000(unsigned short opcode)
   {
-    printf("Set V%X to %X\n", ((opcode & 0x0F00) >> 8), opcode & 0x00FF);
+    print_debug("Set V%X to %X\n", ((opcode & 0x0F00) >> 8), opcode & 0x00FF);
     V[((opcode & 0x0F00) >> 8)] = opcode & 0x00FF;
 
     program_counter += 2;
@@ -216,7 +212,7 @@ namespace YACE
    */
   void CPU::opcode0x7000(unsigned short opcode)
   {
-    printf("Add NN to VX.\n");
+    print_debug("Add NN to VX.\n");
     V[((opcode & 0x0F00) >> 8)] += opcode & 0x00FF;
 
     program_counter += 2;
@@ -227,7 +223,7 @@ namespace YACE
    */
   void CPU::opcode0x8000(unsigned short opcode)
   {
-    printf("Set V%X to the value of V%X.\n", ((opcode & 0x0F00) >> 8),
+    print_debug("Set V%X to the value of V%X.\n", ((opcode & 0x0F00) >> 8),
                                              ((opcode & 0x00F0) >> 4));
     V[((opcode & 0x0F00) >> 8)] = V[((opcode & 0x00F0) >> 4)];
   }
@@ -237,7 +233,7 @@ namespace YACE
    */
   void CPU::opcode0x8001(unsigned short opcode)
   {
-    printf("Set VX to VX OR VY.\n");
+    print_debug("Set VX to VX OR VY.\n");
     V[((opcode & 0x0F00) >> 8)] |= V[((opcode & 0x00F0) >> 4)];
   }
 
@@ -246,7 +242,7 @@ namespace YACE
    */
   void CPU::opcode0x8002(unsigned short opcode)
   {
-    printf("Set VX to VX AND VY.\n");
+    print_debug("Set VX to VX AND VY.\n");
     V[((opcode & 0x0F00) >> 8)] &= V[((opcode & 0x00F0) >> 4)];
   }
 
@@ -255,7 +251,7 @@ namespace YACE
    */
   void CPU::opcode0x8003(unsigned short opcode)
   {
-    printf("Set VX to VX XOR VY.\n");
+    print_debug("Set VX to VX XOR VY.\n");
     V[((opcode & 0x0F00) >> 8)] ^= V[((opcode & 0x00F0) >> 4)];
   }
 
@@ -264,7 +260,7 @@ namespace YACE
    */
   void CPU::opcode0x8004(unsigned short opcode)
   {
-    printf("Set VX to VX + VY.\n");
+    print_debug("Set VX to VX + VY.\n");
     V[0xF] = (V[((opcode & 0x0F00) >> 8)] + V[((opcode & 0x00F0) >> 4)]) > 0xFF;
     V[((opcode & 0x0F00) >> 8)] += V[((opcode & 0x00F0) >> 4)];
   }
@@ -274,7 +270,7 @@ namespace YACE
    */
   void CPU::opcode0x8005(unsigned short opcode)
   {
-    printf("Set VX to VX - VY.\n");
+    print_debug("Set VX to VX - VY.\n");
     V[0xF] = !(V[((opcode & 0x0F00) >> 8)] < V[((opcode & 0x00F0) >> 4)]);
     V[((opcode & 0x0F00) >> 8)] -= V[((opcode & 0x00F0) >> 4)];
   }
@@ -284,7 +280,7 @@ namespace YACE
    */
   void CPU::opcode0x8006(unsigned short opcode)
   {
-    printf("Shift VX right by 1.\n");
+    print_debug("Shift VX right by 1.\n");
     V[0xF] = V[((opcode & 0x0F00) >> 8)] & 0x1;
     V[((opcode & 0x0F00) >> 8)] >>= 1;
   }
@@ -294,7 +290,7 @@ namespace YACE
    */
   void CPU::opcode0x8007(unsigned short opcode)
   {
-    printf("Set VX = VY - VX.\n");
+    print_debug("Set VX = VY - VX.\n");
     V[0xF] = !(V[((opcode & 0x00F0) >> 4)] < V[((opcode & 0x0F00) >> 8)]);
     V[((opcode & 0x0F00) >> 8)] = V[((opcode & 0x00F0) >> 4)] -
                                   V[((opcode & 0x0F00) >> 8)];
@@ -305,7 +301,7 @@ namespace YACE
    */
   void CPU::opcode0x800E(unsigned short opcode)
   {
-    printf("Shift VX left by 1.\n");
+    print_debug("Shift VX left by 1.\n");
     V[0xF] = V[((opcode & 0x0F00) >> 8)] & 0x80;
     V[((opcode & 0x0F00) >> 8)] <<= 1;
   }
@@ -315,7 +311,7 @@ namespace YACE
    */
   void CPU::opcode0x9000(unsigned short opcode)
   {
-    printf("Skip next instruction if VX != VY.\n");
+    print_debug("Skip next instruction if VX != VY.\n");
     if (V[((opcode & 0x0F00) >> 8)] != V[((opcode & 0x00F0) >> 4)])
       program_counter += 4;
     else
@@ -327,7 +323,7 @@ namespace YACE
    */
   void CPU::opcode0xA000(unsigned short opcode)
   {
-    printf("Set I to the address NNN.\n");
+    print_debug("Set I to the address NNN.\n");
     I = (opcode & 0x0FFF) - 1;
 
     program_counter += 2;
@@ -338,7 +334,7 @@ namespace YACE
    */
   void CPU::opcode0xB000(unsigned short opcode)
   {
-    printf("Jump to address NNN plus V0.\n");
+    print_debug("Jump to address NNN plus V0.\n");
     program_counter = V[0] + (opcode & 0x0FFF) - 1;
   }
 
@@ -347,7 +343,7 @@ namespace YACE
    */
   void CPU::opcode0xC000(unsigned short opcode)
   {
-    printf("Set VX to a random number AND NN.\n");
+    print_debug("Set VX to a random number AND NN.\n");
     V[((opcode & 0x0F00) >> 8)] = ((rand() % 0xFF) & 0xFF) & (opcode & 0x00FF);
 
     program_counter += 2;
@@ -358,7 +354,7 @@ namespace YACE
    */
   void CPU::opcode0xD000(unsigned short opcode)
   {
-    printf("Draw sprite at screen location.\n");
+    print_debug("Draw sprite at screen location.\n");
 
     V[0xF] = 0;
     int pos_x = V[(opcode & 0x0F00) >> 8];
@@ -391,7 +387,7 @@ namespace YACE
    */
   void CPU::opcode0xE09E(unsigned short opcode)
   {
-    printf("Skip next instruction if key is pressed.\n");
+    print_debug("Skip next instruction if key is pressed.\n");
     if (chip8.keys[int(V[((opcode & 0x0F00) >> 8)])])
       program_counter += 2;
   }
@@ -401,7 +397,7 @@ namespace YACE
    */
   void CPU::opcode0xE0A1(unsigned short opcode)
   {
-    printf("Skip next instruction if key isn't pressed.\n");
+    print_debug("Skip next instruction if key isn't pressed.\n");
     if (!chip8.keys[int(V[((opcode & 0x0F00) >> 8)])])
       program_counter += 2;
   }
@@ -411,7 +407,7 @@ namespace YACE
    */
   void CPU::opcode0xF007(unsigned short opcode)
   {
-    printf("Set VX to the value of the delay timer.\n");
+    print_debug("Set VX to the value of the delay timer.\n");
     V[((opcode & 0x0F00) >> 8)] = chip8.delay_timer;
   }
 
@@ -420,7 +416,7 @@ namespace YACE
    */
   void CPU::opcode0xF00A(unsigned short opcode)
   {
-    printf("Set VX to awaited key press.\n");
+    print_debug("Set VX to awaited key press.\n");
     if (chip8.key_is_pressed)
     {
       V[((opcode & 0x0F00) >> 8)] = chip8.last_key_pressed;
@@ -435,7 +431,7 @@ namespace YACE
    */
   void CPU::opcode0xF015(unsigned short opcode)
   {
-    printf("Set delay timer to VX.\n");
+    print_debug("Set delay timer to VX.\n");
     chip8.delay_timer = V[((opcode & 0x0F00) >> 8)];
   }
 
@@ -444,7 +440,7 @@ namespace YACE
    */
   void CPU::opcode0xF018(unsigned short opcode)
   {
-    printf("Set sound timer to VX\n");
+    print_debug("Set sound timer to VX\n");
     chip8.sound_timer = V[((opcode & 0x0F00) >> 8)];
   }
 
@@ -453,7 +449,7 @@ namespace YACE
    */
   void CPU::opcode0xF01E(unsigned short opcode)
   {
-    printf("Add VX to I\n");
+    print_debug("Add VX to I\n");
     I += V[((opcode & 0x0F00) >> 8)];
   }
 
@@ -462,7 +458,7 @@ namespace YACE
    */
   void CPU::opcode0xF029(unsigned short opcode)
   {
-    printf("Set I to the location of the sprite for the character in VX.\n");
+    print_debug("Set I to the location of the sprite for the character in VX.\n");
     I = V[((opcode & 0x0F00) >> 8)] * 5;
   }
 
@@ -471,7 +467,7 @@ namespace YACE
    */
   void CPU::opcode0xF033(unsigned short opcode)
   {
-    printf("Stores the BCD representation of VX in I, I+1, I+2.\n");
+    print_debug("Stores the BCD representation of VX in I, I+1, I+2.\n");
     chip8.memory[I] = V[((opcode & 0x0F00) >> 8)] / 100;
     chip8.memory[I + 1] = (V[((opcode & 0x0F00) >> 8)] / 10) % 10;
     chip8.memory[I + 2] = V[((opcode & 0x0F00) >> 8)] % 10;
@@ -482,7 +478,7 @@ namespace YACE
    */
   void CPU::opcode0xF055(unsigned short opcode)
   {
-    printf("Stores V0 to VX in memory starting at I.\n");
+    print_debug("Stores V0 to VX in memory starting at I.\n");
     for (int i = 0; i < ((opcode & 0x0F00) >> 8); i++)
       chip8.memory[I + i] = V[i];
 
@@ -494,7 +490,7 @@ namespace YACE
    */
   void CPU::opcode0xF065(unsigned short opcode)
   {
-    printf("Fills V0 to VX with values from memory starting at I.\n");
+    print_debug("Fills V0 to VX with values from memory starting at I.\n");
     for (int i = 0; i < ((opcode & 0x0F00) >> 8); i++)
       V[i] = chip8.memory[I + i];
 
@@ -510,7 +506,7 @@ namespace YACE
     {
       opcode = (chip8.memory[program_counter] << 8) | chip8.memory[program_counter + 1];
 
-      printf("(%.4X) ", opcode);
+      print_debug("(%.4X) ", opcode);
       switch(opcode & 0xF000)
       {
         case 0x0000:  // Clear screen | Return from a subroutine
@@ -562,7 +558,7 @@ namespace YACE
           handleOpcodes0xF000(opcode);
           break;
         default:
-          printf("Unsupported opcode %X\n", opcode);
+          fprintf(stderr, "Unsupported opcode %X\n", opcode);
           program_counter += 2;
       }
     }
