@@ -27,16 +27,15 @@ namespace YACE
    */
   void Chip8::load_game(const char* file)
   {
-    std::ifstream input(file, std::ifstream::in | std::ifstream::binary);
-
-    if (input.is_open())
+    FILE* input = fopen(file, "rb");
+    if (input)
     {
-      input.seekg(0, std::ifstream::end);
-      int length = input.tellg();
-      input.seekg(0, std::ifstream::beg);
+      fseek(input, 0, SEEK_END);
+      int length = ftell(input);
+      fseek(input, 0, SEEK_SET);
 
-      input.read((char*)&memory[0x200], length);
-      input.close();
+      fread(&memory[0x200], 1, length, input);
+      fclose(input);
     }
     else
       throw "Couldn't open specified file!";

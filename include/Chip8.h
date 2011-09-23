@@ -8,7 +8,6 @@
 #endif
 
 #include <cstdio>
-#include <fstream>
 
 #include "CPU.h"
 
