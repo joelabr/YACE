@@ -2,7 +2,7 @@
 
 namespace YACE
 {
-  Chip8::Chip8() : cpu(CPU(*this)), cpu_cycles(1000), delay_timer(0), sound_timer(0), key_is_pressed(false), last_key_pressed(KEY_0)
+  Chip8::Chip8() : cpu(CPU(*this)), cpu_cycles(400), delay_timer(0), sound_timer(0), key_is_pressed(false), last_key_pressed(KEY_0)
   {
     reset();
   }
@@ -35,7 +35,7 @@ namespace YACE
       int length = input.tellg();
       input.seekg(0, std::ifstream::beg);
 
-      input.read((char*)&memory[0x1FF], length);
+      input.read((char*)&memory[0x200], length);
       input.close();
     }
     else
