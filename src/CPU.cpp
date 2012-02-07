@@ -122,8 +122,11 @@ namespace YACE
       case 0x1E:  // I = I + VX
         opcode0xFX1E(opcode);
         break;
-      case 0x29:  // I = Location of the sprite for character in VX
+      case 0x29:  // Point I to 5-byte font sprite for hex character VX
         opcode0xFX29(opcode);
+        break;
+      case 0x30:  // Point I to 10-byte font sprite for digit VX in memory(I)...memory(I + 2)
+        opcode0xFX30(opcode);
         break;
       case 0x33:  // I, I + 1, I + 2 = BCD of VX
         opcode0xFX33(opcode);
@@ -611,7 +614,7 @@ namespace YACE
   }
 
   /**
-   *  Sets I to the location of the sprite for the character in VX.
+   *  Point I to 5-byte font sprite for hex character VX
    */
   void CPU::opcode0xFX29(unsigned short opcode)
   {
@@ -676,13 +679,25 @@ namespace YACE
    */
   void CPU::opcode0xFX75(unsigned short opcode)
   {
+    int register_x = (opcode & 0xF00) >> 8;
+
+    print_debug("Stores V0 to V%X in RPL user flags");
+
+    for (int i = 0; i <= register_x; i++)
+      RPL[i] = V[i];
   }
 
   /**
-   *  Read V0..VX in RPL user flags (X <= 7)
+   *  Read V0..VX from RPL user flags (X <= 7)
    */
   void CPU::opcode0xFX85(unsigned short opcode)
   {
+    int register_x = (opcode & 0xF00) >> 8;
+
+    print_debug("Reads V0 to V%X from RPL user flags");
+
+    for (int i = 0; i <= register_x; i++)
+      V[i] = RPL[i];
   }
 
   /*
