@@ -15,8 +15,8 @@ namespace YACE
    */
   void Chip8::reset_video()
   {
-    for (int i = 0; i < 0x800; i++)
-      video[i] = 0;
+    video_mode = VIDEO_MODES.CHIP8;
+    memset(video, 0, 0x2000);
   }
 
   /*

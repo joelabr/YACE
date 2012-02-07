@@ -16,10 +16,37 @@ namespace YACE
    */
   void CPU::handleOpcodes0x0000(unsigned short opcode)
   {
-    if ((opcode & 0x00FF) == 0xE0)
-      opcode0x00E0(opcode);
-    else if ((opcode & 0x00FF) == 0xEE)
-      opcode0x00EE(opcode);
+    if (opcode & 0x00F0 == 0xC0)
+    {
+      // Scroll display N lines down
+      opcode0x00CN(opcode);
+      return;
+    }
+
+    switch (opcode & 0x00FF)
+    {
+      case 0xE0:  // Clear display
+        break;
+        opcode0x00E0(opcode);
+      case 0xEE:  // Return from subroutine
+        opcode0x00EE(opcode);
+        break;
+      case 0xFB:  // Scroll display 4 pixels right
+        opcode0x00FB(opcode);
+        break;
+      case 0xFC:  // Scroll display 4 pixels left
+        opcode0x00FC(opcode);
+        break;
+      case 0xFD:  // Exit CHIP interpreter
+        opcode0x00FD(opcode);
+        break;
+      case 0xFE:  // Disable extended screen mode
+        opcode0x00FE(opcode);
+        break;
+      case 0xFF:  // Enable extended screen mode
+        opcode0x00FF(opcode);
+        break;
+    }
   }
 
   /**
@@ -101,13 +128,27 @@ namespace YACE
       case 0x33:  // I, I + 1, I + 2 = BCD of VX
         opcode0xFX33(opcode);
         break;
-      case 0x55:  // Stores V0 to VX in memory starting at I
+      case 0x55:  // Stores V0..VX in memory starting at I
         opcode0xFX55(opcode);
         break;
-      case 0x65:  // Fills V0 to VX with values from memory starting at I
+      case 0x65:  // Reads V0..VX from memory starting at I
         opcode0xFX65(opcode);
         break;
+      case 0x75:  // Stores V0..VX in RPL user flags (X <= 7)
+        opcode0xFX75(opcode);
+        break;
+      case 0x85:  // Reads V0..VX from RPL user flags (X <= 7)
+        opcode0xFX85(opcode);
+        break;
     }
+    program_counter += 2;
+  }
+
+  /**
+   *  Scrolls display N lines down
+   */
+  void CPU::opcode0x00CN(unsigned short opcode)
+  {
     program_counter += 2;
   }
 
@@ -134,6 +175,46 @@ namespace YACE
     }
     else
       program_counter += 2;
+  }
+
+  /**
+   * Scrolls display 5 pixels right
+   */
+  void CPU::opcode0x00FB(unsigned short opcode)
+  {
+    program_counter += 2;
+  }
+
+  /**
+   * Scrolls display 5 pixels left
+   */
+  void CPU::opcode0x00FC(unsigned short opcode)
+  {
+    program_counter += 2;
+  }
+
+  /**
+   * Exit CHIP interpreter
+   */
+  void CPU::opcode0x00FD(unsigned short opcode)
+  {
+    program_counter += 2;
+  }
+
+  /**
+   * Disable extended screen mode
+   */
+  void CPU::opcode0x00FE(unsigned short opcode)
+  {
+    program_counter += 2;
+  }
+
+  /**
+   * Enable extended screen mode
+   */
+  void CPU::opcode0x00FF(unsigned short opcode)
+  {
+    program_counter += 2;
   }
 
   /**
@@ -541,6 +622,13 @@ namespace YACE
   }
 
   /**
+   *  Point I to 10-byte font sprite for digit VX (0..9)
+   */
+  void CPU::opcode0xFX30(unsigned short opcode)
+  {
+  }
+
+  /**
    *  Store the BCD representation of VX.
    */
   void CPU::opcode0xFX33(unsigned short opcode)
@@ -581,6 +669,20 @@ namespace YACE
       V[i] = chip8.memory[I + i];
 
     I += register_x + 1;
+  }
+
+  /**
+   *  Store V0..VX in RPL user flags (X <= 7)
+   */
+  void CPU::opcode0xFX75(unsigned short opcode)
+  {
+  }
+
+  /**
+   *  Read V0..VX in RPL user flags (X <= 7)
+   */
+  void CPU::opcode0xFX85(unsigned short opcode)
+  {
   }
 
   /*
@@ -656,8 +758,10 @@ namespace YACE
     stack = std::stack<unsigned int>();
 
     // Reset V-registers
-    for (int i = 0; i < 16; i++)
-      V[i] = 0;
+    memset(V, 0, 16);
+
+    // Reset RPL-flags
+    memset(RPL, 0, 8);
 
     // Reset I register
     I = 0;

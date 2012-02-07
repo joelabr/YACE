@@ -26,6 +26,7 @@ namespace YACE
       // Registers
       short I;
       char V[16];
+      char RPL[8];
       unsigned int program_counter;
 
       // Opcode functions
@@ -33,8 +34,14 @@ namespace YACE
       void handleOpcodes0x8000(unsigned short opcode);
       void handleOpcodes0xE000(unsigned short opcode);
       void handleOpcodes0xF000(unsigned short opcode);
+      void opcode0x00CN(unsigned short opcode); // TODO
       void opcode0x00E0(unsigned short opcode);
       void opcode0x00EE(unsigned short opcode);
+      void opcode0x00FB(unsigned short opcode); // TODO
+      void opcode0x00FC(unsigned short opcode); // TODO
+      void opcode0x00FD(unsigned short opcode); // TODO
+      void opcode0x00FE(unsigned short opcode); // TODO
+      void opcode0x00FF(unsigned short opcode); // TODO
       void opcode0x1NNN(unsigned short opcode);
       void opcode0x2NNN(unsigned short opcode);
       void opcode0x3XNN(unsigned short opcode);
@@ -55,7 +62,7 @@ namespace YACE
       void opcode0xANNN(unsigned short opcode);
       void opcode0xBNNN(unsigned short opcode);
       void opcode0xCXNN(unsigned short opcode);
-      void opcode0xDXYN(unsigned short opcode);
+      void opcode0xDXYN(unsigned short opcode); // TODO: SuperChip
       void opcode0xEX9E(unsigned short opcode);
       void opcode0xEXA1(unsigned short opcode);
       void opcode0xFX07(unsigned short opcode);
@@ -64,9 +71,12 @@ namespace YACE
       void opcode0xFX18(unsigned short opcode);
       void opcode0xFX1E(unsigned short opcode);
       void opcode0xFX29(unsigned short opcode);
+      void opcode0xFX30(unsigned short opcode); // TODO
       void opcode0xFX33(unsigned short opcode);
       void opcode0xFX55(unsigned short opcode);
       void opcode0xFX65(unsigned short opcode);
+      void opcode0xFX75(unsigned short opcode); // TODO
+      void opcode0xFX85(unsigned short opcode); // TODO
   };
 }
 

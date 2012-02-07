@@ -8,6 +8,7 @@
 #endif
 
 #include <cstdio>
+#include <cstring>
 
 #include "CPU.h"
 
@@ -18,13 +19,16 @@ namespace YACE
     public:
       Chip8();
 
-      enum EMU_KEYS{KEY_0 = 1, KEY_1, KEY_2, KEY_3, KEY_4, KEY_5, KEY_6, KEY_7, KEY_8, KEY_9,
-                    KEY_A, KEY_B, KEY_C, KEY_D, KEY_E, KEY_F};
+      enum EMU_KEYS {KEY_0 = 1, KEY_1, KEY_2, KEY_3, KEY_4, KEY_5, KEY_6, KEY_7, KEY_8, KEY_9,
+                     KEY_A, KEY_B, KEY_C, KEY_D, KEY_E, KEY_F};
+
+      enum VIDEO_MODES {CHIP8, SUPERCHIP};
 
       int get_cpu_cycles() {return cpu_cycles;}
       bool get_key(EMU_KEYS key) {return keys[key];}
       unsigned int get_sound_timer() {return sound_timer;}
       const char* get_video() {return (const char*)video;}
+      VIDEO_MODES get_video_mode() {return video_mode;}
       void load_game(const char* fil0036e);
       void reset();
       void run() {while (true) step();}
@@ -38,7 +42,8 @@ namespace YACE
       CPU cpu;
       int cpu_cycles;
       unsigned char memory[0x1000];
-      char video[0x800];
+      char video[0x2000];
+      VIDEO_MODES video_mode;
 
       // Timers
       unsigned int delay_timer;
