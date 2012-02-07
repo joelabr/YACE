@@ -17,7 +17,7 @@ Make is needed to compile YACE using the provided *makefile*. Using a terminal\c
 
 To-do list
 ----------
-+ Work out bug(s) corrupting parts of graphics in some games (ex. in Space Invaders there's some text that's corrupted).
+Implement SuperChip opcodes.
 
 YACE Front ends
 ---------

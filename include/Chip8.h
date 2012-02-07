@@ -23,8 +23,9 @@ namespace YACE
 
       int get_cpu_cycles() {return cpu_cycles;}
       bool get_key(EMU_KEYS key) {return keys[key];}
+      unsigned int get_sound_timer() {return sound_timer;}
       const char* get_video() {return (const char*)video;}
-      void load_game(const char* file);
+      void load_game(const char* fil0036e);
       void reset();
       void run() {while (true) step();}
       void set_cpu_cycles(int cycles) {cpu_cycles = cycles;}
