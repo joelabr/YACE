@@ -29,7 +29,7 @@ namespace YACE
       unsigned int get_sound_timer() {return sound_timer;}
       const char* get_video() {return (const char*)video;}
       VIDEO_MODES get_video_mode() {return video_mode;}
-      void load_game(const char* fil0036e);
+      void load_game(const char* file);
       void reset();
       void run() {while (true) step();}
       void set_cpu_cycles(int cycles) {cpu_cycles = cycles;}

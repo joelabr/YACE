@@ -1,6 +1,6 @@
 YACE (Yet Another Chip8 Emulator)
 =================================
-YACE is a Chip8 emulator written in C++. YACE is only the emulation core and doesn't come with a Front end.
+YACE is a Chip8/SuperChip emulator written in C++. YACE is only the emulation core and doesn't come with a Front end.
 
 Usage
 -----
@@ -22,3 +22,4 @@ Implement SuperChip opcodes.
 YACE Front ends
 ---------
 + [Allegro YACE] (https://github.com/Johoel/Allegro-YACE)
++ YACE DS

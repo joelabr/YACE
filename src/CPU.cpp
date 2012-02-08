@@ -181,7 +181,7 @@ namespace YACE
   }
 
   /**
-   * Scrolls display 5 pixels right
+   * Scrolls display 4 pixels right
    */
   void CPU::opcode0x00FB(unsigned short opcode)
   {
@@ -189,7 +189,7 @@ namespace YACE
   }
 
   /**
-   * Scrolls display 5 pixels left
+   * Scrolls display 4 pixels left
    */
   void CPU::opcode0x00FC(unsigned short opcode)
   {
@@ -201,6 +201,9 @@ namespace YACE
    */
   void CPU::opcode0x00FD(unsigned short opcode)
   {
+    print_debug("Exit CHIP interpreter.");
+
+    chip8.reset();  // Reconsider...
     program_counter += 2;
   }
 
@@ -209,6 +212,10 @@ namespace YACE
    */
   void CPU::opcode0x00FE(unsigned short opcode)
   {
+    print_debug("Disable extended screen mode.");
+
+    chip8.video_mode = chip8.VIDEO_MODES.CHIP8;
+
     program_counter += 2;
   }
 
@@ -217,6 +224,9 @@ namespace YACE
    */
   void CPU::opcode0x00FF(unsigned short opcode)
   {
+    print_debug("Enable extended screen mode.");
+
+    chip8.video_mode = chip8.VIDEO_MODES.SUPERCHIP;
     program_counter += 2;
   }
 
@@ -503,19 +513,30 @@ namespace YACE
     int pos_x = V[(opcode & 0x0F00) >> 8];
     int pos_y = V[(opcode & 0x00F0) >> 4];
     int lines = opcode & 0x000F;
+    int width = 8;
+    int mask = 0x80;
 
-    print_debug("Draw sprite at (%i, %i) [%X lines].\n", pos_x, pos_y, lines);
+    if (lines == 0 && video_mode == VIDEO_MODES.SUPERCHIP)
+    {
+      lines = 16;
+      width = 16;
+      mask = 0x8000;
+      
+      print_debug("Draw 16x16 sprite at (%i, %i).\n", pos_x, pos_y);
+    }
+    else
+      print_debug("Draw sprite at (%i, %i) [%X lines].\n", pos_x, pos_y, lines);
 
     char data;
 
     for (int y = 0; y < lines; y++)
     {
       data = chip8.memory[I + y];
-      for (int x = 0; x < 8; x++)
+      for (int x = 0; x < width; x++)
       {
-        if (data & (0x80 >> x))
+        if (data & (mask >> x))
         {
-          int pos = (pos_x + x) + ((pos_y + y) * 64);
+          int pos = (pos_x + x) + ((pos_y + y) * (64 << video_mode));
 
           if (chip8.video[pos])
             V[0xF] = 1;
@@ -620,7 +641,7 @@ namespace YACE
   {
     int register_x = (opcode & 0x0F00) >> 8;
 
-    print_debug("Set I to the location of the sprite for the character in V%X [%X].\n", register_x, V[register_x]);
+    print_debug("Point I to 5-byte font sprite for hex character V%X [%X].\n", register_x, V[register_x]);
     I = V[register_x] * 5;
   }
 
@@ -629,6 +650,11 @@ namespace YACE
    */
   void CPU::opcode0xFX30(unsigned short opcode)
   {
+    int register_x = (opcode & 0x0F00) >> 8;
+
+    print_debug("Point I to 10-byte font sprite for digit V%X [%X].\n", register_x, V[register_x]);
+
+    I = V[register_x] * 10;
   }
 
   /**
@@ -651,7 +677,7 @@ namespace YACE
   {
     int register_x = (opcode & 0x0F00) >> 8;
 
-    print_debug("Stores V0 to V%X in memory starting at I [%X].\n", register_x, I);
+    print_debug("Stores V0..V%X in memory starting at I [%X].\n", register_x, I);
 
     for (int i = 0; i <= register_x; i++)
       chip8.memory[I + i] = V[i];
@@ -666,7 +692,7 @@ namespace YACE
   {
     int register_x = (opcode & 0x0F00) >> 8;
 
-    print_debug("Fills V0 to V%X with values from memory starting at I [%X].\n", register_x, I);
+    print_debug("Reads V0..V%X from memory starting at I [%X].\n", register_x, I);
 
     for (int i = 0; i <= register_x; i++)
       V[i] = chip8.memory[I + i];
@@ -681,7 +707,7 @@ namespace YACE
   {
     int register_x = (opcode & 0xF00) >> 8;
 
-    print_debug("Stores V0 to V%X in RPL user flags");
+    print_debug("Stores V0 to V%X in RPL user flags", register_x);
 
     for (int i = 0; i <= register_x; i++)
       RPL[i] = V[i];
@@ -694,7 +720,7 @@ namespace YACE
   {
     int register_x = (opcode & 0xF00) >> 8;
 
-    print_debug("Reads V0 to V%X from RPL user flags");
+    print_debug("Reads V0 to V%X from RPL user flags", register_x);
 
     for (int i = 0; i <= register_x; i++)
       V[i] = RPL[i];
