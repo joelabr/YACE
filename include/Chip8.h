@@ -31,7 +31,6 @@ namespace YACE
       VIDEO_MODES get_video_mode() {return video_mode;}
       void load_game(const char* file);
       void reset();
-      void run() {while (true) step();}
       void set_cpu_cycles(int cycles) {cpu_cycles = cycles;}
       void set_key(EMU_KEYS key, bool pressed);
       void step();
