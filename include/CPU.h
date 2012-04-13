@@ -34,14 +34,8 @@ namespace YACE
       void handleOpcodes0x8000(unsigned short opcode);
       void handleOpcodes0xE000(unsigned short opcode);
       void handleOpcodes0xF000(unsigned short opcode);
-      void opcode0x00CN(unsigned short opcode);
       void opcode0x00E0(unsigned short opcode);
       void opcode0x00EE(unsigned short opcode);
-      void opcode0x00FB(unsigned short opcode);
-      void opcode0x00FC(unsigned short opcode);
-      void opcode0x00FD(unsigned short opcode);
-      void opcode0x00FE(unsigned short opcode);
-      void opcode0x00FF(unsigned short opcode);
       void opcode0x1NNN(unsigned short opcode);
       void opcode0x2NNN(unsigned short opcode);
       void opcode0x3XNN(unsigned short opcode);
@@ -71,10 +65,18 @@ namespace YACE
       void opcode0xFX18(unsigned short opcode);
       void opcode0xFX1E(unsigned short opcode);
       void opcode0xFX29(unsigned short opcode);
-      void opcode0xFX30(unsigned short opcode);
       void opcode0xFX33(unsigned short opcode);
       void opcode0xFX55(unsigned short opcode);
       void opcode0xFX65(unsigned short opcode);
+
+      // Superchip opcodes
+      void opcode0x00CN(unsigned short opcode);
+      void opcode0x00FB(unsigned short opcode);
+      void opcode0x00FC(unsigned short opcode);
+      void opcode0x00FD(unsigned short opcode);
+      void opcode0x00FE(unsigned short opcode);
+      void opcode0x00FF(unsigned short opcode);
+      void opcode0xFX30(unsigned short opcode);
       void opcode0xFX75(unsigned short opcode);
       void opcode0xFX85(unsigned short opcode);
   };
