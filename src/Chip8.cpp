@@ -10,6 +10,7 @@ namespace YACE
   /*
    *  Private methods
    */
+
   /**
    *  Resets video.
    */
@@ -17,6 +18,13 @@ namespace YACE
   {
     video_mode = VIDEO_MODES.CHIP8;
     memset(video, 0, 0x2000);
+  }
+
+  /**
+   *  Setup fonts
+   */
+  void Chip8::setup_fonts()
+  {
   }
 
   /*

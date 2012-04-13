@@ -52,6 +52,7 @@ namespace YACE
       bool key_is_pressed;
       unsigned char last_key_pressed;
 
+      void setup_fonts();
       void reset_video();
   };
 }
