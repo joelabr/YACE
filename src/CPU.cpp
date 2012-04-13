@@ -26,8 +26,8 @@ namespace YACE
     switch (opcode & 0x00FF)
     {
       case 0xE0:  // Clear display
-        break;
         opcode0x00E0(opcode);
+        break;
       case 0xEE:  // Return from subroutine
         opcode0x00EE(opcode);
         break;
@@ -194,7 +194,7 @@ namespace YACE
    */
   void CPU::opcode0x00FB(unsigned short opcode)
   {
-    print_debug("Scrolls display 4 pixles right.");
+    print_debug("Scrolls display 4 pixles right.\n");
 
     for (int i = 0; i < 0x2000; i += 0x80)
     {
@@ -211,7 +211,7 @@ namespace YACE
    */
   void CPU::opcode0x00FC(unsigned short opcode)
   {
-    print_debug("Scrolls display 4 pixles left.");
+    print_debug("Scrolls display 4 pixles left.\n");
 
     for (int i = 0; i < 0x2000; i += 0x80)
     {
@@ -228,7 +228,7 @@ namespace YACE
    */
   void CPU::opcode0x00FD(unsigned short opcode)
   {
-    print_debug("Exit CHIP interpreter.");
+    print_debug("Exit CHIP interpreter.\n");
 
     chip8.reset();  // Reconsider...
     program_counter += 2;
@@ -239,7 +239,7 @@ namespace YACE
    */
   void CPU::opcode0x00FE(unsigned short opcode)
   {
-    print_debug("Disable extended screen mode.");
+    print_debug("Disable extended screen mode.\n");
 
     chip8.video_mode = chip8.CHIP8;
 
@@ -251,7 +251,7 @@ namespace YACE
    */
   void CPU::opcode0x00FF(unsigned short opcode)
   {
-    print_debug("Enable extended screen mode.");
+    print_debug("Enable extended screen mode.\n");
 
     chip8.video_mode = chip8.SUPERCHIP;
     program_counter += 2;
@@ -549,10 +549,10 @@ namespace YACE
       width = 16;
       mask = 0x8000;
       
-      print_debug("Draw 16x16 sprite at (%i, %i).\n", pos_x, pos_y);
+      print_debug("Draw 16x16 sprite at (%u, %u).\n", pos_x, pos_y);
     }
     else
-      print_debug("Draw sprite at (%i, %i) [%X lines].\n", pos_x, pos_y, lines);
+      print_debug("Draw sprite at (%u, %u) [%X lines].\n", pos_x, pos_y, lines);
 
     char data;
 
