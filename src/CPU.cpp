@@ -152,6 +152,15 @@ namespace YACE
    */
   void CPU::opcode0x00CN(unsigned short opcode)
   {
+    int lines = opcode & 0x000F;
+    int data_destination = 0x80 * lines;
+    int data_length = 0x2000 - data_destination;
+
+    print_debug("Scrolls display %i lines down.\n", lines);
+
+    std::memmove(chip8.video + data_destination, chip8.video, data_length);
+    std::memset(chip8.video, 0, data_length);
+
     program_counter += 2;
   }
 
@@ -185,6 +194,15 @@ namespace YACE
    */
   void CPU::opcode0x00FB(unsigned short opcode)
   {
+    print_debug("Scrolls display 4 pixles right.");
+
+    for (int i = 0; i < 0x2000; i += 0x80)
+    {
+      int current_line = chip8.video + i;
+      std::memmove(current_line + 4, current_line, 0x7C);
+      std::memset(current_line, 0, 4);
+    }
+
     program_counter += 2;
   }
 
@@ -193,6 +211,15 @@ namespace YACE
    */
   void CPU::opcode0x00FC(unsigned short opcode)
   {
+    print_debug("Scrolls display 4 pixles left.");
+
+    for (int i = 0; i < 0x2000; i += 0x80)
+    {
+      int current_line = chip8.video + i;
+      std::memmove(current_line, current_line + 4, 0x7C);
+      std::memset(current_line + 0x7C, 0, 4);
+    }
+
     program_counter += 2;
   }
 
@@ -263,8 +290,8 @@ namespace YACE
    */
   void CPU::opcode0x3XNN(unsigned short opcode)
   {
-    int register_x = ((opcode & 0x0F00) >> 8);
-    int value = (opcode & 0x00FF);
+    int register_x = (opcode & 0x0F00) >> 8;
+    int value = opcode & 0x00FF;
 
     print_debug("Skips next instruction if V%X [%X] == %.2X.\n", register_x, V[register_x], value);
     if (V[register_x] == value)
@@ -278,8 +305,8 @@ namespace YACE
    */
   void CPU::opcode0x4XNN(unsigned short opcode)
   {
-    int register_x = ((opcode & 0x0F00) >> 8);
-    int value = (opcode & 0x00FF);
+    int register_x = (opcode & 0x0F00) >> 8;
+    int value = opcode & 0x00FF;
 
     print_debug("Skips next instruction if V%X [%X] != %.2X.\n", register_x, V[register_x], value);
     if (V[register_x] != value)
@@ -293,8 +320,8 @@ namespace YACE
    */
   void CPU::opcode0x5XY0(unsigned short opcode)
   {
-    int register_x = ((opcode & 0x0F00) >> 8);
-    int register_y = ((opcode & 0x00F0) >> 4);
+    int register_x = (opcode & 0x0F00) >> 8;
+    int register_y = (opcode & 0x00F0) >> 4;
 
     print_debug("Skip next instruction if V%X == V%X [%X == %X].\n", register_x, register_y,
                                                                      V[register_x], V[register_y]);
@@ -795,6 +822,8 @@ namespace YACE
 
   void CPU::reset()
   {
+    using std::memset;
+
     opcode = 0;
     stack = std::stack<unsigned int>();
 

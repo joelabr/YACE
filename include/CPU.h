@@ -34,11 +34,11 @@ namespace YACE
       void handleOpcodes0x8000(unsigned short opcode);
       void handleOpcodes0xE000(unsigned short opcode);
       void handleOpcodes0xF000(unsigned short opcode);
-      void opcode0x00CN(unsigned short opcode); // TODO
+      void opcode0x00CN(unsigned short opcode);
       void opcode0x00E0(unsigned short opcode);
       void opcode0x00EE(unsigned short opcode);
-      void opcode0x00FB(unsigned short opcode); // TODO
-      void opcode0x00FC(unsigned short opcode); // TODO
+      void opcode0x00FB(unsigned short opcode);
+      void opcode0x00FC(unsigned short opcode);
       void opcode0x00FD(unsigned short opcode);
       void opcode0x00FE(unsigned short opcode);
       void opcode0x00FF(unsigned short opcode);

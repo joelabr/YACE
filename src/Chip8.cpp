@@ -17,7 +17,7 @@ namespace YACE
   void Chip8::reset_video()
   {
     video_mode = VIDEO_MODES.CHIP8;
-    memset(video, 0, 0x2000);
+    std::memset(video, 0, 0x2000);
   }
 
   /**
@@ -54,18 +54,18 @@ namespace YACE
     */
   void Chip8::reset()
   {
+    using std::memset;
+
     // Reset CPU
     cpu.reset();
 
     reset_video();
 
     // Reset memory
-    for (int i = 0; i < 0x1000; i++)
-      memory[i] = 0;
+    memset(memory, 0, 0x1000);
 
     // Reset keys
-    for (int i = 0; i < 16; i++)
-      keys[i] = 0;
+    memset(keys, 0, 16);
   }
 
   /**
