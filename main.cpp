@@ -6,7 +6,7 @@
 
 #include <cstdio>
 #include <cstdlib>
-#include "include\Chip8.h"
+#include "include/Chip8.h"
 
 void show_help();
 
@@ -28,7 +28,14 @@ int main(int argc, char **argv)
         chip8.set_cpu_cycles(cycles);
     }
 
-    chip8.run();
+    // CAUTION! Infinite loop!
+    while (true)
+    {
+      chip8.step();
+
+      if (std::getchar() == EOF)
+        break;
+    }
   }
   else
     show_help();

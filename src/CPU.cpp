@@ -16,7 +16,7 @@ namespace YACE
    */
   void CPU::handleOpcodes0x0000(unsigned short opcode)
   {
-    if (opcode & 0x00F0 == 0xC0)
+    if ((opcode & 0x00F0) == 0xC0)
     {
       // Scroll display N lines down
       opcode0x00CN(opcode);
@@ -198,7 +198,7 @@ namespace YACE
 
     for (int i = 0; i < 0x2000; i += 0x80)
     {
-      int current_line = chip8.video + i;
+      char* current_line = chip8.video + i;
       std::memmove(current_line + 4, current_line, 0x7C);
       std::memset(current_line, 0, 4);
     }
@@ -215,7 +215,7 @@ namespace YACE
 
     for (int i = 0; i < 0x2000; i += 0x80)
     {
-      int current_line = chip8.video + i;
+      char* current_line = chip8.video + i;
       std::memmove(current_line, current_line + 4, 0x7C);
       std::memset(current_line + 0x7C, 0, 4);
     }
@@ -241,7 +241,7 @@ namespace YACE
   {
     print_debug("Disable extended screen mode.");
 
-    chip8.video_mode = chip8.VIDEO_MODES.CHIP8;
+    chip8.video_mode = chip8.CHIP8;
 
     program_counter += 2;
   }
@@ -253,7 +253,7 @@ namespace YACE
   {
     print_debug("Enable extended screen mode.");
 
-    chip8.video_mode = chip8.VIDEO_MODES.SUPERCHIP;
+    chip8.video_mode = chip8.SUPERCHIP;
     program_counter += 2;
   }
 
@@ -543,7 +543,7 @@ namespace YACE
     int width = 8;
     int mask = 0x80;
 
-    if (lines == 0 && video_mode == VIDEO_MODES.SUPERCHIP)
+    if (lines == 0 && chip8.video_mode == chip8.SUPERCHIP)
     {
       lines = 16;
       width = 16;
@@ -563,7 +563,7 @@ namespace YACE
       {
         if (data & (mask >> x))
         {
-          int pos = (pos_x + x) + ((pos_y + y) * (64 << video_mode));
+          int pos = (pos_x + x) + ((pos_y + y) * (64 << chip8.video_mode));
 
           if (chip8.video[pos])
             V[0xF] = 1;
