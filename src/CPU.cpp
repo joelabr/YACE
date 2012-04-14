@@ -170,7 +170,7 @@ namespace YACE
   void CPU::opcode0x00E0(unsigned short opcode)
   {
     print_debug("Clears the screen.\n");
-    chip8.reset_video();
+    std::memset(chip8.video, 0, 0x2000);
     program_counter += 2;
   }
 
