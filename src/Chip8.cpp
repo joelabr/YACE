@@ -2,7 +2,7 @@
 
 namespace YACE
 {
-  Chip8::Chip8() : cpu(CPU(*this)), cpu_cycles(400), delay_timer(0), sound_timer(0), key_is_pressed(false), last_key_pressed(KEY_0)
+  Chip8::Chip8() : FONT_CHIP8(0x109), FONT_SUPERCHIP(0x159), cpu(CPU(*this)), cpu_cycles(400), delay_timer(0), sound_timer(0), key_is_pressed(false), last_key_pressed(KEY_0)
   {
     reset();
   }
@@ -25,6 +25,27 @@ namespace YACE
    */
   void Chip8::setup_fonts()
   {
+    // Setup Chip8-font (5-byte font)
+    read_font("chip8.font", memory + FONT_CHIP8, 0x50);
+
+    // Setup SuperChip-font (10-byte font)
+    read_font("superchip.font", memory + FONT_SUPERCHIP, 0xA0);
+  }
+
+  /**
+   *  Reads a font file.
+   */
+  void Chip8::read_font(const char* file, unsigned char* destination, int size)
+  {
+    // Open font file
+    FILE* font = fopen(file, "rb");
+
+    if (font)
+    {
+      // Read font to destination
+      fread(destination, 1, size, font);
+      fclose(font);
+    }
   }
 
   /*

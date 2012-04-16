@@ -38,6 +38,9 @@ namespace YACE
       friend class CPU;
 
     private:
+      const int FONT_CHIP8;
+      const int FONT_SUPERCHIP;
+
       CPU cpu;
       int cpu_cycles;
       unsigned char memory[0x1000];
@@ -53,6 +56,7 @@ namespace YACE
       unsigned char last_key_pressed;
 
       void setup_fonts();
+      void read_font(const char* file, unsigned char* destination, int size); 
       void reset_video();
   };
 }
