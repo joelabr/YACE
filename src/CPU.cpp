@@ -674,7 +674,7 @@ namespace YACE
     int register_x = (opcode & 0x0F00) >> 8;
 
     print_debug("Point I to 5-byte font sprite for hex character V%X [%X].\n", register_x, V[register_x]);
-    I = V[register_x] * 5;
+    I = chip8.FONT_CHIP8 + (V[register_x] * 5);
   }
 
   /**
@@ -686,7 +686,7 @@ namespace YACE
 
     print_debug("Point I to 10-byte font sprite for digit V%X [%X].\n", register_x, V[register_x]);
 
-    I = V[register_x] * 10;
+    I = chip8.FONT_SUPERCHIP + (V[register_x] * 10);
   }
 
   /**
