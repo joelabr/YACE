@@ -547,7 +547,6 @@ namespace YACE
     {
       lines = 16;
       width = 16;
-      mask = 0x8000;
       
       print_debug("Draw 16x16 sprite at (%u, %u).\n", pos_x, pos_y);
     }
@@ -567,7 +566,7 @@ namespace YACE
         if (x == 8) // Will only happen when drawing a sprite in SuperChip mode
           data = *(data_pointer++);
 
-        if (data & (mask >> x))
+        if (data & (mask >> (x % 8)))
         {
           int pos = (pos_x + x) + ((pos_y + y) * (64 << chip8.video_mode));
 
