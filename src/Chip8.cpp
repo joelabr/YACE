@@ -5,6 +5,7 @@ namespace YACE
   Chip8::Chip8() : FONT_CHIP8(0x109), FONT_SUPERCHIP(0x159), cpu(CPU(*this)), cpu_cycles(400), delay_timer(0), sound_timer(0), key_is_pressed(false), last_key_pressed(KEY_0)
   {
     reset();
+    setup_fonts();
   }
 
   /*
@@ -82,8 +83,11 @@ namespace YACE
 
     reset_video();
 
-    // Reset memory
-    memset(memory, 0, 0x1000);
+    // Reset interpreter memory
+    memset(memory, 0, FONT_CHIP8);
+
+    // Reset program memory
+    memset(memory + 0x200, 0, 0x800);
 
     // Reset keys
     memset(keys, 0, 16);
