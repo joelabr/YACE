@@ -561,6 +561,10 @@ namespace YACE
       data = chip8.memory[I + y];
       for (int x = 0; x < width; x++)
       {
+        // TODO: Possibly find a better, more generic solution
+        if (chip8.video_mode == chip8.SUPERCHIP && x == 8)
+          data = chip8.memory[I + y + 1];
+
         if (data & (mask >> x))
         {
           int pos = (pos_x + x) + ((pos_y + y) * (64 << chip8.video_mode));
