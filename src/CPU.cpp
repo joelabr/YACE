@@ -554,16 +554,18 @@ namespace YACE
     else
       print_debug("Draw sprite at (%u, %u) [%X lines].\n", pos_x, pos_y, lines);
 
-    char data;
+    unsigned char* data_pointer = &chip8.memory[I];
+    unsigned char data;
 
     for (int y = 0; y < lines; y++)
     {
-      data = chip8.memory[I + y];
+      data = *(data_pointer++);
+
       for (int x = 0; x < width; x++)
       {
         // TODO: Possibly find a better, more generic solution
-        if (chip8.video_mode == chip8.SUPERCHIP && x == 8)
-          data = chip8.memory[I + y + 1];
+        if (x == 8) // Will only happen when drawing a sprite in SuperChip mode
+          data = *(data_pointer++);
 
         if (data & (mask >> x))
         {
