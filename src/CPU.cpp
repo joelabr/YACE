@@ -153,13 +153,17 @@ namespace YACE
   void CPU::opcode0x00CN(unsigned short opcode)
   {
     int lines = opcode & 0x000F;
-    int data_destination = 0x80 * lines;
-    int data_length = 0x2000 - data_destination;
+
+    int width = 64 << chip8.video_mode;
+    int video_length = width * (32 << chip8.video_mode);
+
+    int data_destination = width * lines;
+    int data_length = video_length - data_destination;
 
     print_debug("Scrolls display %i lines down.\n", lines);
 
     std::memmove(chip8.video + data_destination, chip8.video, data_length);
-    std::memset(chip8.video, 0, data_length);
+    std::memset(chip8.video, 0, data_destination);
 
     program_counter += 2;
   }
@@ -198,13 +202,16 @@ namespace YACE
 
     int width = 64 << chip8.video_mode;
     int height = 32 << chip8.video_mode;
-    int video_length = width * height;
+    int scroll_width = 2 << chip8.video_mode;
+    char* video_length = chip8.video + (width * height);  // End of video memory
 
-    for (int i = 0; i < video_length; i += width)
+    for (char* line = chip8.video; line < video_length; line += width)
     {
-      char* current_line = chip8.video + i;
-      std::memmove(current_line + 4, current_line, width - 4);
-      std::memset(current_line, 0, 4);
+      // Move line 4 pixels right
+      std::memmove(line + scroll_width, line, width - scroll_width);
+      
+      // Clear the first 4 pixels on line
+      std::memset(line, 0, scroll_width);
     }
 
     program_counter += 2;
@@ -219,13 +226,16 @@ namespace YACE
 
     int width = 64 << chip8.video_mode;
     int height = 32 << chip8.video_mode;
-    int video_length = width * height;
+    int scroll_width = 2 << chip8.video_mode;
+    char* video_length = chip8.video + (width * height);  // End of video memory
 
-    for (int i = 0; i < video_length; i += width)
+    for (char* line = chip8.video; line < video_length; line += width)
     {
-      char* current_line = chip8.video + i;
-      std::memmove(current_line, current_line + 4, width - 4);
-      std::memset(current_line + (width - 4), 0, 4);
+      // Move line 4 pixels left
+      std::memmove(line, line + scroll_width, width - scroll_width);
+
+      // Clear the last 4 pixels on line
+      std::memset(line + (width - scroll_width), 0, scroll_width);
     }
 
     program_counter += 2;
@@ -556,10 +566,11 @@ namespace YACE
     int width = 8;
     int mask = 0x80;
 
-    if (lines == 0 && chip8.video_mode == chip8.SUPERCHIP)
+    // Draw 16 * 16 sprite (SuperChip mode) or 8 * 16 sprite (Chip-8 mode) if lines == 0
+    if (lines == 0)
     {
       lines = 16;
-      width = 16;
+      width = 8 << chip8.video_mode;
       
       print_debug("Draw 16x16 sprite at (%u, %u).\n", pos_x, pos_y);
     }
