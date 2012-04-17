@@ -196,10 +196,14 @@ namespace YACE
   {
     print_debug("Scrolls display 4 pixles right.\n");
 
-    for (int i = 0; i < 0x2000; i += 0x80)
+    int width = 64 << chip8.video_mode;
+    int height = 32 << chip8.video_mode;
+    int video_length = width * height;
+
+    for (int i = 0; i < video_length; i += width)
     {
       char* current_line = chip8.video + i;
-      std::memmove(current_line + 4, current_line, 0x7C);
+      std::memmove(current_line + 4, current_line, width - 4);
       std::memset(current_line, 0, 4);
     }
 
@@ -213,11 +217,15 @@ namespace YACE
   {
     print_debug("Scrolls display 4 pixles left.\n");
 
-    for (int i = 0; i < 0x2000; i += 0x80)
+    int width = 64 << chip8.video_mode;
+    int height = 32 << chip8.video_mode;
+    int video_length = width * height;
+
+    for (int i = 0; i < video_length; i += width)
     {
       char* current_line = chip8.video + i;
-      std::memmove(current_line, current_line + 4, 0x7C);
-      std::memset(current_line + 0x7C, 0, 4);
+      std::memmove(current_line, current_line + 4, width - 4);
+      std::memset(current_line + (width - 4), 0, 4);
     }
 
     program_counter += 2;
