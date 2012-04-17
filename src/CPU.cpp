@@ -276,6 +276,7 @@ namespace YACE
     int address = opcode & 0x0FFF;
 
     print_debug("Call subroutine at %X.\n", address);
+
     if (stack.size() < 16)
     {
       stack.push(program_counter);
@@ -291,10 +292,11 @@ namespace YACE
   void CPU::opcode0x3XNN(unsigned short opcode)
   {
     int register_x = (opcode & 0x0F00) >> 8;
-    int value = opcode & 0x00FF;
+    int value = opcode & 0xFF;
 
     print_debug("Skips next instruction if V%X [%X] == %.2X.\n", register_x, V[register_x], value);
-    if (V[register_x] == value)
+
+    if ((V[register_x] & 0xFF) == value)
       program_counter += 4;
     else
       program_counter += 2;
@@ -306,10 +308,11 @@ namespace YACE
   void CPU::opcode0x4XNN(unsigned short opcode)
   {
     int register_x = (opcode & 0x0F00) >> 8;
-    int value = opcode & 0x00FF;
+    int value = opcode & 0xFF;
 
     print_debug("Skips next instruction if V%X [%X] != %.2X.\n", register_x, V[register_x], value);
-    if (V[register_x] != value)
+
+    if ((V[register_x] & 0xFF) != value)
       program_counter += 4;
     else
       program_counter += 2;
@@ -325,7 +328,7 @@ namespace YACE
 
     print_debug("Skip next instruction if V%X == V%X [%X == %X].\n", register_x, register_y,
                                                                      V[register_x], V[register_y]);
-    if (V[register_x] == V[register_y])
+    if ((V[register_x] & 0xFF) == (V[register_y] & 0xFF))
       program_counter += 4;
     else
       program_counter += 2;
@@ -337,7 +340,7 @@ namespace YACE
   void CPU::opcode0x6XNN(unsigned short opcode)
   {
     int register_x = (opcode & 0x0F00) >> 8;
-    int value = opcode & 0x00FF;
+    int value = opcode & 0xFF;
 
     print_debug("Set V%X to %X.\n", register_x, value);
     V[register_x] = value;
@@ -351,7 +354,7 @@ namespace YACE
   void CPU::opcode0x7XNN(unsigned short opcode)
   {
     int register_x = (opcode & 0x0F00) >> 8;
-    int value = opcode & 0x00FF;
+    int value = opcode & 0xFF;
 
     print_debug("Add %X to V%X.\n", value, register_x);
     V[register_x] += value;
@@ -369,7 +372,7 @@ namespace YACE
 
     print_debug("Set V%X to the value of V%X [%X].\n", register_x, register_y,
                                                         V[register_y]);
-    V[register_x] = V[register_y];
+    V[register_x] = V[register_y] & 0xFF;
   }
 
   /**
@@ -382,7 +385,7 @@ namespace YACE
 
     print_debug("Set V%X to V%X OR V%X [%X | %X].\n", register_x, register_x, register_y,
                                             V[register_x], V[register_y]);
-    V[register_x] |= V[register_y];
+    V[register_x] |= (V[register_y] & 0xFF);
   }
 
   /**
@@ -436,7 +439,7 @@ namespace YACE
     print_debug("Set V%X to V%X - V%X [%X - %X].\n", register_x, register_x, register_y,
                                            V[register_x], V[register_y]);
     V[0xF] = !(V[register_x] < V[register_y]);
-    V[register_x] -= V[register_y];
+    V[register_x] -= V[register_y] & 0xFF;
   }
 
   /**
@@ -447,6 +450,7 @@ namespace YACE
     int register_x = (opcode & 0x0F00) >> 8;
 
     print_debug("Shift V%X right by 1.\n", register_x);
+
     V[0xF] = V[register_x] & 1;
     V[register_x] >>= 1;
   }
@@ -462,7 +466,7 @@ namespace YACE
     print_debug("Set V%X = V%X - V%X [%X - %X].\n", register_x, register_y, register_x,
                                                     V[register_y], V[register_x]);
     V[0xF] = !(V[register_y] < V[register_x]);
-    V[register_x] = V[register_y] - V[register_x];
+    V[register_x] = (V[register_y] & 0xFF) - (V[register_x] & 0xFF);
   }
 
   /**
@@ -473,6 +477,7 @@ namespace YACE
     int register_x = (opcode & 0x0F00) >> 8;
 
     print_debug("Shift V%X left by 1.\n", register_x);
+
     V[0xF] = V[register_x] >> 7;
     V[register_x] <<= 1;
   }
@@ -487,7 +492,7 @@ namespace YACE
 
     print_debug("Skip next instruction if V%X != V%X. [%X != %X]\n", register_x, register_y,
                                                                      V[register_x], V[register_y]);
-    if (V[register_x] != V[register_y])
+    if ((V[register_x] & 0xFF) != (V[register_y] & 0xFF))
       program_counter += 4;
     else
       program_counter += 2;
