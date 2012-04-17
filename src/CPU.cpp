@@ -424,8 +424,8 @@ namespace YACE
 
     print_debug("Set V%X to V%X + V%X [%X + %X].\n", register_x, register_x, register_y,
                                                       V[register_x], V[register_y]);
-    V[0xF] = (V[register_x] + V[register_y]) > 0xFF;
-    V[register_x] += V[register_y];
+    V[0xF] = ((V[register_x] & 0xFF) + (V[register_y] & 0xFF)) > 0xFF;
+    V[register_x] += V[register_y] & 0xFF;
   }
 
   /**
@@ -438,7 +438,7 @@ namespace YACE
 
     print_debug("Set V%X to V%X - V%X [%X - %X].\n", register_x, register_x, register_y,
                                            V[register_x], V[register_y]);
-    V[0xF] = !(V[register_x] < V[register_y]);
+    V[0xF] = !((V[register_x] & 0xFF) < (V[register_y] & 0xFF));
     V[register_x] -= V[register_y] & 0xFF;
   }
 
@@ -452,7 +452,7 @@ namespace YACE
     print_debug("Shift V%X right by 1.\n", register_x);
 
     V[0xF] = V[register_x] & 1;
-    V[register_x] >>= 1;
+    V[register_x] = (V[register_x] & 0xFF) >> 1;
   }
 
   /**
@@ -478,8 +478,8 @@ namespace YACE
 
     print_debug("Shift V%X left by 1.\n", register_x);
 
-    V[0xF] = V[register_x] >> 7;
-    V[register_x] <<= 1;
+    V[0xF] = (V[register_x] & 0xFF) >> 7;
+    V[register_x] = (V[register_x] & 0xFF) << 1;
   }
 
   /**
@@ -668,7 +668,9 @@ namespace YACE
     int register_x = (opcode & 0x0F00) >> 8;
 
     print_debug("Add V%X [%X] to I [%X]\n", register_x, V[register_x], I);
+
     I += V[register_x];
+    V[0xF] = I > 0xFFF; // Undocumented Chip-8 feature
   }
 
   /**
@@ -744,7 +746,7 @@ namespace YACE
   {
     int register_x = (opcode & 0xF00) >> 8;
 
-    print_debug("Stores V0 to V%X in RPL user flags", register_x);
+    print_debug("Stores V0 to V%X in RPL user flags\n", register_x);
 
     for (int i = 0; i <= register_x; i++)
       RPL[i] = V[i];
@@ -757,7 +759,7 @@ namespace YACE
   {
     int register_x = (opcode & 0xF00) >> 8;
 
-    print_debug("Reads V0 to V%X from RPL user flags", register_x);
+    print_debug("Reads V0 to V%X from RPL user flags\n", register_x);
 
     for (int i = 0; i <= register_x; i++)
       V[i] = RPL[i];
